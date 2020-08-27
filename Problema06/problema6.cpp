@@ -2,6 +2,25 @@
 Nombre: Diego Ignacio Carrasco Vásquez
 ID: yihahoi
 Autoría: Solución e implementación propia.
+
+algoritmo:
+
+      while(total_secuencias):
+          while(total_apuestas_por_secuencia):
+                se_procesan_apuestas()
+
+      
+para el costo temporal:
+      
+      costo_total = total_secuencias * total_apuestas_por_secuencia * costo(procesar_apuestas)
+      asi, el costo temporal está dado por O(n) cuando n es el total de apuestas de todas las secuencias
+
+para el costo espacial:
+      
+      el algoritmo procesa las apuestas de una en una a medida que le van llegando y además aprovecha las mismas variables
+      para todos los calculos, por lo tanto el costo espacial es de O(1)
+
+
 */
 
 
