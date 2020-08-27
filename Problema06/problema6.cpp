@@ -18,9 +18,9 @@ int main (int argc, char** argv) {
     int accum;
     int max;
 
-    ifstream cin("input.txt");  // archivo de entrada
+    //ifstream cin("input.txt");  // archivo de entrada
 
-    // para cada serie de apuestas
+    // para cada secuencia de apuestas
     while (cin >> n) {
 
         // condicion de termino cuando n = 0
@@ -30,20 +30,19 @@ int main (int argc, char** argv) {
         max = 0;
         accum = 0;
         i = 0;
+        // para cada apuesta
         while(i < n){
-            // inputs del caso
+            // Se acumula la apuesta
             cin >> bet;
-            // si se acaba la racha se compara lo acumulado con 
-            // la mejor racha pasada
-            if(bet < 0){
-                if(max < accum)
-                    max = accum;
-                accum += bet;
-                if(accum < max)
-                    accum = 0;
-            // racha
-            } else {
-                accum += bet;
+            accum += bet;
+            // si la apuesta resulto en perdida y nos
+            // quedamos sin dinero se acaba la racha
+            if(bet < 0 && accum <= 0){
+                accum = 0;
+            // si la apuesta resulto en ganancia y 
+            // es una mejor racha, se guarda
+            } else if(max < accum){
+                max = accum;
             }
             i++;   
         }
