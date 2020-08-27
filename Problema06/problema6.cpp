@@ -9,16 +9,16 @@ algoritmo:
           while(total_apuestas_por_secuencia):
                 se_procesan_apuestas()
 
-      
+
 para el costo temporal:
-      
+
       costo_total = total_secuencias * total_apuestas_por_secuencia * costo(procesar_apuestas)
-      asi, el costo temporal está dado por O(n) cuando n es el total de apuestas de todas las secuencias
+      asi, el costo temporal está dado por O(n) cuando n es el total de apuestas de todas las secuencias sumadas.
 
 para el costo espacial:
-      
+
       el algoritmo procesa las apuestas de una en una a medida que le van llegando y además aprovecha las mismas variables
-      para todos los calculos, por lo tanto el costo espacial es de O(1)
+      para todos los calculos, por lo tanto el costo espacial es de O(1). Si se considera el archivo de entrada en el costo, entonces sería O(n).
 
 
 */
@@ -58,23 +58,23 @@ int main (int argc, char** argv) {
             // quedamos sin dinero se acaba la racha
             if(bet < 0 && accum <= 0){
                 accum = 0;
-            // si la apuesta resulto en ganancia y 
+            // si la apuesta resulto en ganancia y
             // es una mejor racha, se guarda
             } else if(max < accum){
                 max = accum;
             }
-            i++;   
+            i++;
         }
-        // se debe comprobar si se acumula el ultimo bet 
+        // se debe comprobar si se acumula el ultimo bet
         if(bet > 0 && max < accum)
             max = accum;
-        
+
         // se encontro alguna racha? o pura perdida?
         if(max != 0)
             cout << "The maximum winning streak is " << max << "." << endl;
         else
             cout << "Losing streak." << endl;
-      
+
     }
 
     return(0);
