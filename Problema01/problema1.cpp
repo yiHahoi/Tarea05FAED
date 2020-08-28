@@ -1,92 +1,82 @@
 /*
 Nombre: Diego Ignacio Carrasco Vásquez
 ID: yihahoi
-Autoría: Solución e implementación propia.
+Autoría: Solución e implementación del repositorio "KHvic".
+https://github.com/KHvic/uva-online-judge/blob/master/11205-The%20broken%20pedometer.cpp
 
-Resumen del Programa:
+algoritmo:
 
-	asdf
+        for(total_casos):
+            for(total_symbols):
+            for(minimal_representations):
+                for(symbols): O(n)
 
+para el costo temporal:
 
-Análisis Asintótico de la Solución:
-
-    considerando las siguientes constantes y pseudocodigo,
-
-    n = proporcional al total de lineas de input al programa
-    m = proporcional al número de casos
-
-    ##############################################################
-
-    main():
-
-        Declaracion inicial de variables            # Ot(1)     y   Oe(1)
-        for(case):                                  # Ot(m)     y   Oe(m)
-            for(cars):                              # Ot(n/m)   y   Oe(n/m)
-                front y pop (queue)                 # Ot(1)     y   Oe(1)
-            for(k)                                  # Ot(n/m)   y   Oe(n/m)
-                se imprimen resultados              # Ot(1)     y   Oe(1)
-
-
-    ##############################################################
-
-    Considerando lo anterior se tiene que el orden temporal y espacial del problema será O(n)
-
+        El costo temporal esta dado por el total de casos "c" mas la lectura de los simbolos "n*p" mas
+        el calculo de las representaciones minimas que corresponde a 2^p. Es decir el problema es O(c*(n*p + 2^p))
+        que se puede reducir a O(c*2^p).
 
 */
 
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <fstream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-int main (int argc, char** argv) {
+int main()
+{
+    fstream cin("input.txt");
 
     int totalCases;
-    int n0, n1, n2, n3;
-    string word1, word2;
-
-    ifstream cin("input.txt");  // archivo de entrada
-
-    // total de casos
-    cin >> totalCases;
+    int p;
+    int n;
+    int v;
+    vector<int> symbols;
 
     // para cada caso
-    for (int i=0; i<totalCases; i++) {
+    cin >> totalCases;
+    while(totalCases--){
+        cin >> p;
+        cin >> n;
+        symbols.clear();
+        for(int i=0;i<n;i++){
+            int symbol = 0;
 
-        // inputs del caso
-        cin >> word1;
-        cin >> n0;
-        cin >> n1;
-        cin >> word2;
-        cin >> n2;
-        cin >> n3;
-        cout << word1[0] << n0 << n1 << word2[0] << n2 << n3 << endl;
+            // para cada simbolo del caso se lee sus digitos y se guardan en la variable symbol
+            // luego se realiza un corrimiento de bits en la variable, de forma que en p pasos
+            // se tiene la representacion codificada en symbol en la forma de valor entero.
+            for(int j=0;j<p;j++){
+                cin >> v;
+                symbol = (symbol<<1)+v;
+            }
+            // una vez que se captura el simbolo, este se guarda en un vector symbols.
+            symbols.push_back(symbol);
+        }
 
+        // como se tienen p digitos para representar los valores del caso,
+        // se realiza la iteracion un maximo de (1<<p) veces =(2^p)
+        int least = INT_MAX;
+        for(int i=0;i<(1<<p);i++){
+            unordered_set<int> represents;
+            // se utiliza el indice de las 2^p alternativas como mascara sobre los simbolos entregados como input
+            // de esta forma se obtienen los bits que influyen en la representacion de un valor especifico, ya que pueden
+            // haber bits que esten o no, de todas maneras se pueda deducir el valor.
+            for(auto& symbol : symbols)
+                represents.insert(i&symbol);
 
-
+            // si se obtiene un total de n secuencias de bits que son necesarios para representar valores,
+            // se puede calcular el minimo de bits necesario.
+            if(represents.size() == n){
+                int numBits = 0;
+                v = i;
+                while(v){
+                    numBits++;
+                    v &= (v-1);
+                }
+                least = min(least, numBits);
+            }
+        }
+        cout << least << endl;
     }
-
-    return(0);
-
 }
-
-
-
-
-/*
-contenedor_iterable  conjunto_de_n_elementos = {e0,...,eN}
-contenedor_iterable mascara = {1_0, 1_2,....,1_k, 0_N-k,....,0_N}
-
-sort (conjunto_de_n_elementos)
-
-do
-    contenedor conjunto_de_k_elementos;
-    for (i=0; i<N; i++)
-        if (mascara[i]==1) contenedor_de_k_elementos.push_back(conjunto_de_n_elementos[i])
-while (next_permutation(mascara))
-*/
-
-

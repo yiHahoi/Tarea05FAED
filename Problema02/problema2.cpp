@@ -67,7 +67,7 @@ int main()
     int n,t,m;
     vector<int> nums;
 
-    ifstream cin("input.txt");
+    //ifstream cin("input.txt");
 
     // para cada caso
     while(cin >> n){
