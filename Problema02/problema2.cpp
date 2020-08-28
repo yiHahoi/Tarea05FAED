@@ -1,92 +1,96 @@
 /*
 Nombre: Diego Ignacio Carrasco Vásquez
 ID: yihahoi
-Autoría: Solución e implementación propia.
+Autoría: Solución e implementación del repositorio "KHvic".
+https://github.com/KHvic/uva-online-judge/blob/master/624-CD.cpp
 
-Resumen del Programa:
+algoritmo:
 
-	asdf
-
-
-Análisis Asintótico de la Solución:
-
-    considerando las siguientes constantes y pseudocodigo,
-
-    n = proporcional al total de lineas de input al programa
-    m = proporcional al número de casos
-
-    ##############################################################
-
-    main():
-
-        Declaracion inicial de variables            # Ot(1)     y   Oe(1)
-        for(case):                                  # Ot(m)     y   Oe(m)
-            for(cars):                              # Ot(n/m)   y   Oe(n/m)
-                front y pop (queue)                 # Ot(1)     y   Oe(1)
-            for(k)                                  # Ot(n/m)   y   Oe(n/m)
-                se imprimen resultados              # Ot(1)     y   Oe(1)
+        for(total_casos):
+            for(total_tracks):
+            dfs()
+            for(total_tracks):
+                output
 
 
-    ##############################################################
+para el costo temporal:
 
-    Considerando lo anterior se tiene que el orden temporal y espacial del problema será O(n)
+        Algoritmo por fuerza bruta. El peor caso se obtiene cuando se tiene una combinacion de parametros que
+        obligan a la funcion de busqueda dfs a comprobar todas las alternativas posibles.
+
+        costo_total = total_casos * (costo_dfs() + 2*lectura_total_de_tracks())
+        asi, el costo temporal está dado por O(n*(2*t+2^t)) donde n es el total de casos y t es el total de tracks del caso.
+        Para los casos con un numero de tracks mayores a 2, se tiene un costo O(n*2^t)
+
+para el costo espacial:
+
+        El costo en espacio estará dado por el total de tracks del caso, ya que estos ocupan espacio en un vector.
+        Además, se tiene el costo de stack al realizar las llamadas recursivas de dfs las que atravesarán ramas del arbol.
+        Así, el costo total en espacio estára dado por: O(t)
 
 
 */
 
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <fstream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-int main (int argc, char** argv) {
+int res;
+int best;
 
-    int totalCases;
-    int n0, n1, n2, n3;
-    string word1, word2;
+// se hace el equivalente a una busqueda por profundidad en el arbol (abstracto) de
+// soluciones posibles. La mejor opcion se va guardando a medida que se realiza la busqueda
+// en las variables globales.
+void dfs(int i, vector<int>& nums, int sum, int cur, int limit){
 
-    ifstream cin("input.txt");  // archivo de entrada
-
-    // total de casos
-    cin >> totalCases;
-
-    // para cada caso
-    for (int i=0; i<totalCases; i++) {
-
-        // inputs del caso
-        cin >> word1;
-        cin >> n0;
-        cin >> n1;
-        cin >> word2;
-        cin >> n2;
-        cin >> n3;
-        cout << word1[0] << n0 << n1 << word2[0] << n2 << n3 << endl;
-
-
-
+    if(sum > limit) // condicion de termino
+        return;
+    else if(sum > best){ // si se encuentra una mejor opcion se guarda
+        best = sum;
+        res = cur;
     }
+    if(i >= nums.size()) // condicion de termino de la rama
+        return;
 
-    return(0);
-
+    // busqueda por las dos subramas con:
+    // 1 track menos,
+    // tiempo incrementado en minutos del track seleccionado,
+    // selector de track movido
+    // considerando el mismo tiempo maximo del cassette
+    dfs(i+1,nums,sum+nums[i],cur|(1<<i),limit);
+    dfs(i+1,nums,sum,cur,limit);
 }
 
+int main()
+{
+    int n,t,m;
+    vector<int> nums;
 
+    ifstream cin("input.txt");
 
-
-/*
-contenedor_iterable  conjunto_de_n_elementos = {e0,...,eN}
-contenedor_iterable mascara = {1_0, 1_2,....,1_k, 0_N-k,....,0_N}
-
-sort (conjunto_de_n_elementos)
-
-do
-    contenedor conjunto_de_k_elementos;
-    for (i=0; i<N; i++)
-        if (mascara[i]==1) contenedor_de_k_elementos.push_back(conjunto_de_n_elementos[i])
-while (next_permutation(mascara))
-*/
-
+    // para cada caso
+    while(cin >> n){
+        cin >> t;
+        nums.clear();
+        // se leen los tracks con sus tiempos
+        for(int i=0;i<t;i++){
+            cin >> m;
+            nums.push_back(m);
+        }
+        // se hace una "búsqueda por profundidad" de todas las alternativas
+        // y el resultado se guarda en las variables globales res y best
+        res = 0;
+        best = 0;
+        dfs(0,nums,0,0,n); // llamada inicial de dfs
+        // para cada track se revisa si fue seleccionado como parte del conjunto
+        // de tracks que iran en el cassette mediante una mascara de bits
+        for(int i=0;i<t;i++)
+            if(res & (1<<i)) { // mascara de bits de tracks en resultado
+                printf("%d ",nums[i]);
+            }
+        // se imprime el mejor uso
+        printf("sum:%d\n",best);
+    }
+}
 
